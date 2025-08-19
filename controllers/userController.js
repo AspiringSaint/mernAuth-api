@@ -15,10 +15,10 @@ const User = require('../models/User');
  * @description Create a new user.
  */
 const createNewUser = asyncHandler (async (request, response) => {
-    const { username, password } = request.body;
+    const { username, password, roles } = request.body;
 
     // Require username and password.
-    if (!username || !password) {
+    if (!username || !password || !roles) {
         return response.status(400).json({ message: 'All fields are required' });
     }
 
@@ -36,7 +36,7 @@ const createNewUser = asyncHandler (async (request, response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user instance.
-    const newUser = new User({ username, password: hashedPassword });
+    const newUser = new User({ username, password: hashedPassword, roles });
 
     // Create user in database.
     await newUser.save();
@@ -64,7 +64,33 @@ const getAllUsers = asyncHandler (async (request, response) => {
     response.status(200).json(users);
 })
 
+
+/**
+ * @description Delete a user
+ */
+const deleteUser = asyncHandler (async (request, response) => {
+    const { id } = request.body;
+
+    // Require an id
+    if (!id ) {
+        return response.status(400).json({ message: 'User ID required' });
+    }
+
+    // Check if the users exists 
+    const user = await User.findById(id).exec();
+
+    if (!user) {
+        return response.status(400).json({ message: 'User not found' });
+    }
+
+    // Delete the user
+    await User.findByIdAndDelete(id).exec();
+    response.status(200).json({ message: `User ${user.username} with ID ${user._id} deleted` });
+})
+
+
 module.exports = {
     createNewUser,
-    getAllUsers
+    getAllUsers,
+    deleteUser
 }
