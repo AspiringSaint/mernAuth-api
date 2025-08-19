@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const express = require('express'); 
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 5500; // Fallback port if .env doesn't specify.
@@ -16,9 +17,11 @@ connectDB();
 
 // Middleware stack
 app.use(express.json());
+app.use(cookieParser());
 
 // API routes
 app.use('/api/users', require('./routes/userRoute'));
+app.use('/api/auth', require('./routes/authRoute'));
 
 // Error Handling Middleware
 // This should be last so it catches any errors from above routes/middlewares

@@ -58,7 +58,7 @@ const login = asyncHandler (async (request, response) => {
 })
 
 
-const logout = asyncHandler (async (request, response) => {
+const logout = async (request, response) => {
     const cookies = request.cookies;
 
     if (!cookies?.jwt) {
@@ -70,11 +70,10 @@ const logout = asyncHandler (async (request, response) => {
         httpOnly: true,
         secure: true,
         sameSite: 'None',
-        maxAge: 0
     });
 
     response.json({ message: 'Cookie cleared' });
-})
+}
 
 module.exports = {
     login,
