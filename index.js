@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express'); 
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 5500; // Fallback port if .env doesn't specify.
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 5500; // Fallback port if .env doesn't specify.
 // Custom modules
 const connectDB = require('./configs/dbConnections');
 const errorHandler = require('./middlewares/errorMiddleware');
+const corsOptions = require('./configs/corsOptions');
 
 // Connect to MongoDB
 connectDB();
@@ -18,6 +20,7 @@ connectDB();
 // Middleware stack
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(corsOptions))
 
 // API routes
 app.use('/api/users', require('./routes/userRoute'));
